@@ -65,8 +65,28 @@ public class CategoryBean {
         return false;
     }
 
+    public boolean deleteCategory(int id) {
+        CategoryEntity categoryEntity = categoryDao.findCategoryById(id);
+        List<TaskEntity> taskEntities = taskDao.findTasksByCategory(categoryEntity);
+        if (taskEntities.isEmpty()) {
+            categoryDao.deleteCategory(categoryEntity);
+            return true;
+        }
+        return false;
+    }
+
     public boolean updateCategory(CategoryDto categoryDto, String title) {
         CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(title);
+        if (categoryEntity == null) {
+            return false;
+        }
+        categoryEntity.setTitle(categoryDto.getTitle());
+        categoryEntity.setDescription(categoryDto.getDescription());
+        categoryDao.merge(categoryEntity);
+        return true;
+    }
+    public boolean updateCategory(CategoryDto categoryDto, int id) {
+        CategoryEntity categoryEntity = categoryDao.findCategoryById(id);
         if (categoryEntity == null) {
             return false;
         }
