@@ -75,6 +75,19 @@ public class TaskService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
+    // Get todas as tasks ativas
+    @GET
+    @Path("/active")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getActiveTasks(@HeaderParam("token") String token) {
+        if (userBean.isValidUserByToken(token)) {
+            List<TaskDto> tasks = taskBean.getActiveTasks();
+            return Response.status(200).entity(tasks).build();
+        } else {
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+    }
 
     //Service that updates the task status
     @PUT

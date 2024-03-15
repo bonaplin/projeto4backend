@@ -254,13 +254,13 @@ public class UserService {
     }
 
     @POST
-    @Path("/updateactive/")
+    @Path("/updateactive")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response changeStatus(@HeaderParam("token") String token, @QueryParam("username") String username, @QueryParam("active") boolean active) {
+    public Response changeStatus(@HeaderParam("token") String token, UserStatusUpdateDto userStatusUpdateDto) {
         if(!userBean.isValidUserByToken(token) && !userBean.getUserByToken(token).getRole().equals("po")){
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }else if(userBean.getUserByToken(token).getRole().equals("po")){
-            if(userBean.changeStatus(username, active)){
+            if(userBean.changeStatus(userStatusUpdateDto.getUsername(), userStatusUpdateDto.isActive())){
                 return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Status changed")).toString()).build();
             }else{
                 return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Status not changed")).toString()).build();
