@@ -9,17 +9,9 @@ import aor.paj.validator.TaskValidator;
 import aor.paj.validator.UserValidator;
 import jakarta.inject.Inject;
 import jakarta.json.bind.JsonbException;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.Path;
 
 import java.util.List;
 import java.util.Objects;
@@ -207,6 +199,27 @@ public class TaskService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
+    @PUT
+    @Path("/restore/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response restoreTask(@HeaderParam("token") String token, @PathParam("id") int id) {
+        if (userBean.isValidUserByToken(token)) {
+            String role = userBean.getUserRole(token);
+            if (role.equals("sm") || role.equals("po")) {
+                if (taskBean.restoreTask(id)) {
+                    return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is restored"))).build();
+                } else {
+                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Cannot restore task"))).build();
+                }
+            } else {
+                return Response.status(403).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Forbidden"))).build();
+            }
+        } else {
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+    }
+
 
     //Service that receives a token and a task name, validates the token, checks if user = po, and deletes the task from the database
     @DELETE
@@ -229,6 +242,28 @@ public class TaskService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
+    @DELETE
+    @Path("delete/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteTask(@HeaderParam("token") String token, @PathParam ("id") int id){
+        if (userBean.isValidUserByToken(token)) {
+            String role = userBean.getUserRole(token);
+            if (role.equals("po")) {
+                if (taskBean.deleteTask(id)) {
+                    return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is deleted"))).build();
+                } else {
+                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Cannot delete task"))).build();
+                }
+            } else {
+                return Response.status(403).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Forbidden"))).build();
+            }
+        } else {
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+    }
+
+
 
     //Service that receives a token, checks if the user is valid, checks if user role = sm or po, and restore all tasks
     @PUT
