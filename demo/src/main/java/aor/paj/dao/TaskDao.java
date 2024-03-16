@@ -58,6 +58,13 @@ public class TaskDao extends AbstractDao<TaskEntity>{
             return null;
         }
     }
+    public List<TaskEntity> getInactiveTasks() {
+        try {
+            return em.createNamedQuery("Task.getInactiveTasks").getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 
     public List<TaskEntity> findTasksByCategory(CategoryEntity category){
         try {

@@ -93,6 +93,14 @@ public class TaskBean {
         }
         return taskDtos;
     }
+    public List<TaskDto> getInactiveTasks(){
+        List<TaskEntity> taskEntities = taskDao.getInactiveTasks();
+        ArrayList<TaskDto> taskDtos = new ArrayList<>();
+        for (TaskEntity taskEntity : taskEntities) {
+            taskDtos.add(TaskMapper.convertTaskEntityToTaskDto(taskEntity));
+        }
+        return taskDtos;
+    }
 
     //Function that receives a task id and a new task status and updates the task status in the database mysql
     public void updateTaskStatus(int id, int status) {

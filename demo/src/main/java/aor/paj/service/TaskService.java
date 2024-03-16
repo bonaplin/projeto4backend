@@ -88,6 +88,24 @@ public class TaskService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
+    @GET
+    @Path("/inactive")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    // just the po and sm can see the inactive tasks
+    public Response getInactiveTasks(@HeaderParam("token") String token) {
+        if (userBean.isValidUserByToken(token)) {
+            String role = userBean.getUserRole(token);
+            if (role.equals("sm") || role.equals("po")) {
+                List<TaskDto> tasks = taskBean.getInactiveTasks();
+                return Response.status(200).entity(tasks).build();
+            } else {
+                return Response.status(403).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Forbidden"))).build();
+            }
+        } else {
+            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+        }
+    }
 
     //Service that updates the task status
     @PUT
