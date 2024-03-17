@@ -3,6 +3,7 @@ package aor.paj.service;
 import aor.paj.bean.TaskBean;
 import aor.paj.bean.UserBean;
 import aor.paj.dto.TaskDto;
+import aor.paj.entity.TaskEntity;
 import aor.paj.responses.ResponseMessage;
 import aor.paj.utils.JsonUtils;
 import aor.paj.validator.TaskValidator;
@@ -105,6 +106,12 @@ public class TaskService {
         } else {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
+    }
+    @Path("tasks/active/")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<TaskEntity> getActiveStatusTasks(@QueryParam("status") int status) {
+        return taskBean.getActiveStatusTasks(status);
     }
 
     //Service that updates the task status

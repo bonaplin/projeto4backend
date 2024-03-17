@@ -217,4 +217,7 @@ public class TaskBean {
         return taskDtos;
     }
 
+    public List<TaskEntity> getActiveStatusTasks(int status) {
+        return taskDao.getActiveStatusTasks(status);
+    }
 }

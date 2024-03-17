@@ -65,6 +65,13 @@ public class TaskDao extends AbstractDao<TaskEntity>{
             return null;
         }
     }
+    public List<TaskEntity> getActiveStatusTasks(int status) {
+        try {
+            return em.createNamedQuery("Task.getActiveStatusTasks").setParameter("status", status).getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 
     public List<TaskEntity> findTasksByCategory(CategoryEntity category){
         try {
