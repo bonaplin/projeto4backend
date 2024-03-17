@@ -228,7 +228,12 @@ public class TaskBean {
         return taskDtos;
     }
 
-    public List<TaskEntity> getActiveStatusTasks(int status) {
-        return taskDao.getActiveStatusTasks(status);
+    public List<TaskDto> getActiveStatusTasks(int status) {
+        List<TaskEntity> taskEntities = taskDao.getActiveStatusTasks(status);
+        ArrayList<TaskDto> taskDtos = new ArrayList<>();
+        for (TaskEntity taskEntity : taskEntities) {
+            taskDtos.add(TaskMapper.convertTaskEntityToTaskDto(taskEntity));
+        }
+        return taskDtos;
     }
 }

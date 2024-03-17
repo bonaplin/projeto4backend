@@ -99,11 +99,12 @@ public class TaskService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
-    @Path("tasks/active/")
     @GET
+    @Path("/status/")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<TaskEntity> getActiveStatusTasks(@QueryParam("status") int status) {
-        return taskBean.getActiveStatusTasks(status);
+    public Response getActiveStatusTasks(@QueryParam("status") int status) {
+        List<TaskDto> taskDtos = taskBean.getActiveStatusTasks(status);
+        return Response.status(Response.Status.OK).entity(taskDtos).build();
     }
 
     //Service that updates the task status
