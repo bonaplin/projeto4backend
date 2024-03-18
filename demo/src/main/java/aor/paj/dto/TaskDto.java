@@ -21,9 +21,7 @@ public class TaskDto {
     private String owner;
     private boolean active;
 
-    public TaskDto() {
-
-    }
+    public TaskDto() {}
 
     public TaskDto(String title, String description, LocalDate initialDate, LocalDate finalDate, int priority) {
         this.title = title;

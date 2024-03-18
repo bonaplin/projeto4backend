@@ -22,6 +22,11 @@ import java.util.stream.Collectors;
 @Path("/user")
 public class UserService {
 
+
+
+
+
+    //FALTA ENDPOINT DE USERS APENAS ATIVOS
     @Inject
     UserBean userBean;
 
