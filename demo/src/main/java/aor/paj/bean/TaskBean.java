@@ -205,6 +205,16 @@ public class TaskBean {
         }
         return taskDtos;
     }
+    public List <TaskDto> getActiveTasksByCategoryAndOwner(String category, String owner){
+        UserEntity userEntity = userDao.findUserByUsername(owner);
+        CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(category);
+        List<TaskEntity> taskEntities = taskDao.getActiveTasksByCategoryAndOwner(userEntity, categoryEntity);
+        ArrayList<TaskDto> taskDtos = new ArrayList<>();
+        for (TaskEntity taskEntity : taskEntities) {
+            taskDtos.add(TaskMapper.convertTaskEntityToTaskDto(taskEntity));
+        }
+        return taskDtos;
+    }
 
     //Function that returns list of tasks filtered by category from the database mysql
     public List<TaskDto> getTasksByCategory(String category){

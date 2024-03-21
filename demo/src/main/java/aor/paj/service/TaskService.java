@@ -40,7 +40,7 @@ public class TaskService {
                     return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Cannot add task"))).build();
                 }
             } else {
-                return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid task"))).build();
+                return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Verify the fields. Title is unique"))).build();
             }
         } else {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
@@ -51,17 +51,17 @@ public class TaskService {
     @Path("/all")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTasks(@HeaderParam("token") String token, @QueryParam("category") String category, @QueryParam("owner") String owner) {
+    public Response getTasks(@HeaderParam("token") String token, @QueryParam("category") String category, @QueryParam("username") String username) {
         if (userBean.isValidUserByToken(token)) {
             List<TaskDto> tasks;
-            if (category != null && !category.isEmpty() && owner != null && !owner.isEmpty()) {
-                tasks = taskBean.getTasksByCategoryAndOwner(category, owner);
+            if (category != null && !category.isEmpty() && username != null && !username.isEmpty()) {
+                tasks = taskBean.getActiveTasksByCategoryAndOwner(category, username);
             } else if (category != null && !category.isEmpty()) {
                 tasks = taskBean.getTasksByCategory(category);
-            } else if (owner != null && !owner.isEmpty()) {
-                tasks = taskBean.getTasksByOwner(owner);
+            } else if (username != null && !username.isEmpty()) {
+                tasks = taskBean.getTasksByOwner(username);
             } else {
-                tasks = taskBean.getAllTasks();
+                tasks = taskBean.getActiveTasks();
             }
             return Response.status(200).entity(tasks).build();
         } else {
@@ -212,7 +212,7 @@ public class TaskService {
                     taskBean.updateTask(t, id);
                     return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Task is updated"))).build();
                 } else {
-                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Invalid task"))).build();
+                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Verify your fields. Title is unique"))).build();
                 }
             } else {
                 return Response.status(403).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Forbidden"))).build();
