@@ -257,14 +257,18 @@ public class UserBean {
     }
 
     public boolean deleteUser(String username) {
-        if(username.equals("admin") || username.equals("User deleted")){
+        if(username.equals("admin") || username.equals("deleted")){
             return false;
         }
         UserEntity userEntity = userDao.findUserByUsername(username);
+        System.out.println("user a ser apagado: " + userEntity.getUsername());
         if (userEntity != null) {
-            changeTaskOwner(username,"User deleted");
-            changeCategoryOwner(username,"User deleted");
+            changeTaskOwner(username,"deleted");
+            System.out.println("tasks alteradas");
+            changeCategoryOwner(username,"deleted");
+            System.out.println("categorias alteradas");
             userDao.remove(userEntity);
+            System.out.println("user removido");
 
             return true;
             }
@@ -291,8 +295,11 @@ public class UserBean {
         if(oldUserEntity != null && newUserEntity != null){
             List<TaskEntity> tasks = taskDao.findTaskByOwnerId(oldUserEntity.getId());
             for(TaskEntity task : tasks){
+                System.out.println("task a ser alterada: " + task.getTitle());
                 task.setOwner(newUserEntity);
+
                 taskDao.merge(task);
+                System.out.println("task alterada: " + task.getTitle());
             }
             return true;
         }
@@ -325,13 +332,13 @@ public class UserBean {
             addUser(userDto);
         }
 
-        if (userDao.findUserByUsername("User deleted") == null) {
+        if (userDao.findUserByUsername("deleted") == null) {
             UserDto userDto = new UserDto();
-            userDto.setUsername("User deleted");
+            userDto.setUsername("deleted");
             userDto.setPassword("deleted");
             userDto.setFirstname("User deleted");
             userDto.setLastname("User deleted");
-            userDto.setEmail("deleted@deleted");
+            userDto.setEmail("userdeleted@deleted");
             userDto.setPhone("000000000");
             userDto.setPhotoURL("https://www.shutterstock.com/image-vector/trash-can-icon-symbol-delete-600nw-1454137346.jpg");
             addUser(userDto);
