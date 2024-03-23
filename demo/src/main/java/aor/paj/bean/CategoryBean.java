@@ -44,15 +44,15 @@ public class CategoryBean {
     }
 
     //Function that returns the categories of tasks that are active in the database my sql, firts gets the tasks that are active and then gets the categories of those tasks
-    public List<CategoryDto> getActiveCategories() {
-        List<TaskEntity> taskEntities = taskDao.getActiveTasks();
-        List<CategoryDto> categoryDtos = new ArrayList<>();
-        for (TaskEntity taskEntity : taskEntities) {
-            CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(taskEntity.getCategory().getTitle());
-            categoryDtos.add(CategoryMapper.convertCategoryEntityToCategoryDto(categoryEntity));
-        }
-        return categoryDtos;
-    }
+//    public List<CategoryDto> getActiveCategories() {
+//        List<TaskEntity> taskEntities = taskDao.getActiveTasks();
+//        List<CategoryDto> categoryDtos = new ArrayList<>();
+//        for (TaskEntity taskEntity : taskEntities) {
+//            CategoryEntity categoryEntity = categoryDao.findCategoryByTitle(taskEntity.getCategory().getTitle());
+//            categoryDtos.add(CategoryMapper.convertCategoryEntityToCategoryDto(categoryEntity));
+//        }
+//        return categoryDtos;
+//    }
 
     //Function that receives a category title, checks if there is any task with the category, if not, deletes the category
     public boolean deleteCategory(String title) {

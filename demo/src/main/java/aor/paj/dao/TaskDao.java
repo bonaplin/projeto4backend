@@ -101,4 +101,15 @@ public class TaskDao extends AbstractDao<TaskEntity>{
         return em.createNamedQuery("Task.getAllTasks").getResultList();
     }
 
+    public List<TaskEntity> getTasksByStatusAndOwnerAndCategory(Integer status, UserEntity owner, CategoryEntity category){
+        try {
+            return em.createNamedQuery("Task.findTaskByStatusAndOwnerAndCategory", TaskEntity.class)
+                    .setParameter("status", status)
+                    .setParameter("owner", owner)
+                    .setParameter("category", category)
+                    .getResultList();
+        } catch (NoResultException e) {
+            return new ArrayList<>();
+        }
+    }
 }

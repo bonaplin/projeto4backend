@@ -10,7 +10,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/category")
+@Path("/categories")
 public class CategoryService {
 
     @Inject
@@ -21,7 +21,7 @@ public class CategoryService {
 
     //Service that gets all categories from database
     @GET
-    @Path("/all")
+    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCategories(@HeaderParam("token") String token) {
@@ -31,43 +31,39 @@ public class CategoryService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
-
-    //Service that sends the categorys of tasks that are active in the database mysql
-    @GET
-    @Path("/active")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getActiveCategories(@HeaderParam("token") String token) {
-        if (userBean.isValidUserByToken(token)) {
-            return Response.status(200).entity(categoryBean.getActiveCategories()).build();
-        } else {
-            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-        }
-    }
-
-    //Service that receives a token and a category title, validates, checks if user is role po, checks if there is any task with the category, if not, deletes the category
+//    //Service that sends the categorys of tasks that are active in the database mysql
+//    @GET
+//    @Path("/active")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getActiveCategories(@HeaderParam("token") String token) {
+//        if (userBean.isValidUserByToken(token)) {
+//            return Response.status(200).entity(categoryBean.getActiveCategories()).build();
+//        } else {
+//            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+//        }
+//    }
+//    @DELETE
+//    @Path("/delete")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response deleteCategory(@HeaderParam("token") String token, @QueryParam("title") String title) {
+//        if (userBean.isValidUserByToken(token)) {
+//            if (userBean.getUserRole(token).equals("po")) {
+//                if (categoryBean.deleteCategory(title)) {
+//                    return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category deleted"))).build();
+//                } else {
+//                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("There are tasks with this category. Delete this tasks before deleting the category."))).build();
+//                }
+//            } else {
+//                return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+//            }
+//        } else {
+//            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+//        }
+//    }
     @DELETE
-    @Path("/delete")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteCategory(@HeaderParam("token") String token, @QueryParam("title") String title) {
-        if (userBean.isValidUserByToken(token)) {
-            if (userBean.getUserRole(token).equals("po")) {
-                if (categoryBean.deleteCategory(title)) {
-                    return Response.status(200).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Category deleted"))).build();
-                } else {
-                    return Response.status(400).entity(JsonUtils.convertObjectToJson(new ResponseMessage("There are tasks with this category. Delete this tasks before deleting the category."))).build();
-                }
-            } else {
-                return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-            }
-        } else {
-            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-        }
-    }
-
-    @DELETE
-    @Path("/delete/{id}")
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteCategory(@HeaderParam("token") String token, @PathParam("id") int id) {
@@ -85,10 +81,8 @@ public class CategoryService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
-
-    //Service that receives a token and a category dto, validates the token, checks if toke user role its po, checks if its a valid category and if so, adds the category to the database
     @POST
-    @Path("/add")
+    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addCategory(@HeaderParam("token") String token, CategoryDto category) {
@@ -108,11 +102,8 @@ public class CategoryService {
         }
         return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
     }
-
-
-    //service that receives a token, category dto and a category title, validates the token, checks if toke user role its po, checks if its a valid category and if so, updates the category in the database
     @PUT
-    @Path("/update")
+    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateCategory(@HeaderParam("token") String token, CategoryDto
@@ -133,9 +124,8 @@ public class CategoryService {
         }
         return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
     }
-
     @PUT
-    @Path("/update/{id}")
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateCategory(@HeaderParam("token") String token, CategoryDto category, @PathParam("id") int id) {
@@ -157,22 +147,20 @@ public class CategoryService {
             return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
         }
     }
-
-    //Service that receives a token and a category title, validates the token, checks if toke user role its po, and sends back the number of tasks with the category sended in the title
-    @GET
-    @Path("/tasksNumber")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getTasksByCategory(@HeaderParam("token") String token, @QueryParam("title") String title) {
-        if (userBean.isValidUserByToken(token)) {
-            if (userBean.getUserRole(token).equals("po")) {
-                return Response.status(200).entity(categoryBean.getNumberOfTasksByCategory(title)).build();
-            } else {
-                return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-            }
-        } else {
-            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
-        }
-    }
+//    @GET
+//    @Path("/tasksNumber")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getTasksByCategory(@HeaderParam("token") String token, @QueryParam("title") String title) {
+//        if (userBean.isValidUserByToken(token)) {
+//            if (userBean.getUserRole(token).equals("po")) {
+//                return Response.status(200).entity(categoryBean.getNumberOfTasksByCategory(title)).build();
+//            } else {
+//                return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+//            }
+//        } else {
+//            return Response.status(401).entity(JsonUtils.convertObjectToJson(new ResponseMessage("Unauthorized"))).build();
+//        }
+//    }
 
 }
