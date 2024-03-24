@@ -20,6 +20,11 @@ import java.time.LocalDate;
 @NamedQuery(name = "Task.findTaskByCategory", query = "SELECT t FROM TaskEntity t WHERE t.category = :category AND t.active = true ORDER BY t.priority DESC, t.initialDate, COALESCE(t.finalDate, '9999-12-31')")
 @NamedQuery(name = "Task.findTaskByCategoryAndOwner", query = "SELECT t FROM TaskEntity t WHERE t.category = :category AND t.owner = :owner AND t.active = true ORDER BY t.priority DESC, t.initialDate, COALESCE(t.finalDate, '9999-12-31')")
 @NamedQuery(name = "Task.findActiveTaskByCategoryAndOwner", query = "SELECT t FROM TaskEntity t WHERE t.category = :category AND t.owner = :owner AND t.active = true ORDER BY t.priority DESC, t.initialDate, COALESCE(t.finalDate, '9999-12-31')")
+@NamedQuery(name = "Task.findTaskByStatusAndOwnerAndCategory", query = "SELECT t FROM TaskEntity t WHERE t.status = :status AND t.owner = :owner AND t.category = :category AND t.active = true ORDER BY t.priority DESC, t.initialDate, COALESCE(t.finalDate, '9999-12-31')")
+@NamedQuery(name = "Task.findTaskByNameAndStatus",
+        query = "SELECT t FROM TaskEntity t WHERE t.title = :title AND t.status = :status AND t.active = true ORDER BY t.priority DESC, t.initialDate, COALESCE(t.finalDate, '9999-12-31')")
+@NamedQuery(name = "Task.findTaskByCategoryAndStatus",
+        query = "SELECT t FROM TaskEntity t WHERE t.category = :category AND t.status = :status AND t.active = true ORDER BY t.priority DESC, t.initialDate, COALESCE(t.finalDate, '9999-12-31')")
 public class TaskEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
